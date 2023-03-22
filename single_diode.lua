@@ -41,3 +41,6 @@ end
 print(table.concat(i,", "))
 print(table.concat(p,", "))
 print(table.concat(v,", "))
+
+-- https://electricalacademia.com/renewable-energy/photovoltaic-pv-cell-working-characteristics/#:~:text=Iscn%20is%20the%20nominal%20short-circuit%20current%20Ki%20is,ratings%20listed%20for%20commercial%20PV%20cells%20or%20panels.
+
