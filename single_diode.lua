@@ -38,9 +38,22 @@ for v_p=0,52,v_oc do
 end
 
 -- Print generated values of current and power
-print(table.concat(i,", "))
-print(table.concat(p,", "))
-print(table.concat(v,", "))
+--print(table.concat(i,", "))
+--print(table.concat(p,", "))
+--print(table.concat(v,", "))
 
--- https://electricalacademia.com/renewable-energy/photovoltaic-pv-cell-working-characteristics/#:~:text=Iscn%20is%20the%20nominal%20short-circuit%20current%20Ki%20is,ratings%20listed%20for%20commercial%20PV%20cells%20or%20panels.
+require('plplotluac')
+-- Parse and process command line arguments
+--pl.parseopts( arg, pl.PL_PARSE_FULL )
 
+pl.init() -- Initialize plplot
+pl.env(0, 40, 0, 260, 0, 0) -- Create a labelled box to hold the plot.
+pl.lab("Tension (V)", "Potencia (W)", "")
+pl.line(v, p) -- Plot the data that was prepared above.
+pl.plend() -- Close PLplot library
+
+pl.init() -- Initialize plplot
+pl.env(0, 40, 0, 9, 0, 0) -- Create a labelled box to hold the plot.
+pl.lab("Tension (V)", "Corriente (A)", "")
+pl.line(v, i) -- Plot the data that was prepared above.
+pl.plend() -- Close PLplot library

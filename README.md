@@ -5,6 +5,4 @@ Code used for PV module simulations, differente mathematical models implemented 
 The final product will be implemented in ANSI C, but as it is currently in prototyping phase, Lua was chosen as the scripting language, due to it's good interfacing with C and ease of use
 
 # TODO
-- Plotting from Lua
 - Call Lua script from C
-
