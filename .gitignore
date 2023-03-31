@@ -1,4 +1,5 @@
-# Vector images
+# Vector files
 *.svg
+*.pdf
 # PLplot binary (if needed, the repo has a release with my precompiled file)
 plplotluac.dll
