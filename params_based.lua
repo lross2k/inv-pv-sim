@@ -1,3 +1,5 @@
+require "newtonraphson"
+
 -- Constant values
 q   = 1.6e-19 -- elementary charge
 K   = 1.4e-23 -- Boltzmann constant
@@ -30,10 +32,9 @@ i_0 = i_rs * (T / T_n) ^ 3 * math.exp(q * E_go * (1 / T_n - 1 / T) / (n * K))
 -- Array declaration
 i = {}; p = {}; v = {}
 
--- NUMERICAL METHOD NEEDED HERE PLEASE
+v_pv = 3
+i_sh = (v_pv + i_pv * R_s) / R_sh
 
--- shunt current
-i_sh = (v + i_pv * R_s) / R_sh
 -- photovoltaic current
 i_pv = i_ph - i_0 * (math.exp(q * (v_pv + i_pv * R_s) / (n * K * N_s * T)) - 1) - i_sh
 
