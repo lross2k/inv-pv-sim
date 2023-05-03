@@ -5,3 +5,6 @@
 plplotluac.dll
 # MS DOS Binaries
 *.exe
+*.dll
+# *NIX Binaries 
+*.o
