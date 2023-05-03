@@ -1,5 +1,3 @@
-require "newtonraphson"
-
 -- Constant values
 q   = 1.6e-19 -- elementary charge
 K   = 1.4e-23 -- Boltzmann constant
@@ -33,15 +31,31 @@ i_0 = i_rs * (T / T_n) ^ 3 * math.exp(q * E_go * (1 / T_n - 1 / T) / (n * K))
 i = {}; p = {}; v = {}
 
 v_pv = 3
-i_sh = (v_pv + i_pv * R_s) / R_sh
+--i_sh = (v_pv + i_pv * R_s) / R_sh
+i_sh = 0.0116935
 
 -- photovoltaic current
-i_pv = i_ph - i_0 * (math.exp(q * (v_pv + i_pv * R_s) / (n * K * N_s * T)) - 1) - i_sh
+i_pv = 0 -- initial guess
+
+-- Array declaration
+i = {}; p = {}; v = {}
+
+-- Generate values for a range of the equation
+index = 0
+for v_pv=0,5000,v_oc do
+    i_pv = i_ph - i_0 * (math.exp(q * (v_pv + i_pv * R_s) / (n * K * N_s * T)) - 1) - i_sh
+	if i_pv >= 0 then
+    	i[index] = i_pv
+	    p[index] = i_pv * v_pv
+	    v[index] = v_pv
+	    index = index + 1
+	end
+end
 
 -- Print generated values of current and power
---print(table.concat(i,", "))
---print(table.concat(p,", "))
---print(table.concat(v,", "))
+print(table.concat(i,", "))
+print(table.concat(p,", "))
+print(table.concat(v,", "))
 
 --[[
 require('plplotluac')
