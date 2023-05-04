@@ -39,11 +39,11 @@ int print_state (size_t iter, gsl_multiroot_fsolver * s)
 int pv_calc_f (const gsl_vector * x, void *params,
               gsl_vector * f)
 {
-    double a = ((struct rparams *) params)->a;
-    double b = ((struct rparams *) params)->b;
-    double c = ((struct rparams *) params)->c;
-    double d = ((struct rparams *) params)->d;
-    double e = ((struct rparams *) params)->e;
+    long double a = ((struct rparams *) params)->a;
+    long double b = ((struct rparams *) params)->b;
+    long double c = ((struct rparams *) params)->c;
+    long double d = ((struct rparams *) params)->d;
+    long double e = ((struct rparams *) params)->e;
 
     const double x0 = gsl_vector_get (x, 0); // i_pv
     const double x1 = gsl_vector_get (x, 1); // i_sh
@@ -59,14 +59,13 @@ int pv_calc_f (const gsl_vector * x, void *params,
 
 static int c_pv_calc (lua_State *L) {
     //check and fetch the arguments
-    double arg1 = luaL_checknumber (L, 1);    
-    double arg2 = luaL_checknumber (L, 2);
-    double arg3 = luaL_checknumber (L, 3);
-    double arg4 = luaL_checknumber (L, 4);
-    double arg5 = luaL_checknumber (L, 5);
-    double arg6 = luaL_checknumber (L, 6);
-    double arg7 = luaL_checknumber (L, 7);
-    printf("a: %f b: %f c: %f d: %f", arg1, arg2, arg3, arg4);
+    long double arg1 = luaL_checknumber (L, 1);    
+    long double arg2 = luaL_checknumber (L, 2);
+    long double arg3 = luaL_checknumber (L, 3);
+    long double arg4 = luaL_checknumber (L, 4);
+    long double arg5 = luaL_checknumber (L, 5);
+    long double arg6 = luaL_checknumber (L, 6);
+    long double arg7 = luaL_checknumber (L, 7);
 
     const gsl_multiroot_fsolver_type *T;
     gsl_multiroot_fsolver *s;
@@ -74,17 +73,17 @@ static int c_pv_calc (lua_State *L) {
     int status;
     size_t i, iter = 0;
 
-    const size_t n = 5;
+    const size_t n = 2;
     struct rparams p = {arg1, arg2, arg3, arg4, arg5};
     gsl_multiroot_function f = {&pv_calc_f, n, &p};
 
-    double x_init[2] = {arg6, arg7};
+    long double x_init[2] = {arg6, arg7};
     gsl_vector *x = gsl_vector_alloc (n);
 
     gsl_vector_set (x, 0, x_init[0]);
     gsl_vector_set (x, 1, x_init[1]);
 
-    T = gsl_multiroot_fsolver_hybrids;
+    T = gsl_multiroot_fsolver_hybrid;
     s = gsl_multiroot_fsolver_alloc (T, n);
     gsl_multiroot_fsolver_set (s, &f, x);
 

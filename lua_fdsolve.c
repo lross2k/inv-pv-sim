@@ -25,7 +25,7 @@ struct rparams {
     double e;
 };
   
-int print_state (size_t iter, gsl_multiroot_fsolver * s)
+int print_state (size_t iter, gsl_multiroot_fdfsolver * s)
 {
     printf ("iter = %3u x = % .3f % .3f "
           "f(x) = % .3e % .3e\n",

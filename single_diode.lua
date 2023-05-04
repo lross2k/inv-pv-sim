@@ -42,6 +42,18 @@ end
 --print(table.concat(p,", "))
 --print(table.concat(v,", "))
 
+-- Using file I/O
+file = io.open("single_diode.txt", "w")
+for iter=1,index-1 do
+  file:write(v[iter])
+  file:write("\t")
+  file:write(i[iter])
+  file:write("\t")
+  file:write(p[iter])
+  file:write("\n")
+end
+
+--[[
 require('plplotluac')
 -- Parse and process command line arguments
 --pl.parseopts( arg, pl.PL_PARSE_FULL )
@@ -57,3 +69,4 @@ pl.env(0, 40, 0, 9, 0, 0) -- Create a labelled box to hold the plot.
 pl.lab("Tension (V)", "Corriente (A)", "")
 pl.line(v, i) -- Plot the data that was prepared above.
 pl.plend() -- Close PLplot library
+--]]

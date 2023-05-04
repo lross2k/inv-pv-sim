@@ -57,6 +57,17 @@ print(table.concat(i,", "))
 print(table.concat(p,", "))
 print(table.concat(v,", "))
 
+-- Using file I/O
+file = io.open("params.txt", "w")
+for iter=1,index-1 do
+  file:write(v[iter])
+  file:write("\t")
+  file:write(i[iter])
+--  file:write("\t")
+--  file:write(p[iter])
+  file:write("\n")
+end
+
 --[[
 require('plplotluac')
 -- Parse and process command line arguments
