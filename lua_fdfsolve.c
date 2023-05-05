@@ -2,39 +2,14 @@
 #include <stdio.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_multiroots.h>
-
-#ifdef __cplusplus
-  #include "lua.hpp"
-#else
-  #include "lua.h"
-  #include "lualib.h"
-  #include "lauxlib.h"
-#endif
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
 #include <math.h>
 
-//so that name mangling doesn't mess up function names
-#ifdef __cplusplus
-extern "C"{
-#endif
-
 struct rparams {
-    double a;
-    double b;
-    double c;
-    double d;
-    double e;
+    double a, b, c, d, e;
 };
-  
-int print_state (size_t iter, gsl_multiroot_fdfsolver * s)
-{
-    printf ("iter = %3u x = % .3f % .3f "
-          "f(x) = % .3e % .3e\n",
-          iter,
-          gsl_vector_get (s->x, 0),
-          gsl_vector_get (s->x, 1),
-          gsl_vector_get (s->f, 0),
-          gsl_vector_get (s->f, 1));
-}
 
 int pv_calc_f (const gsl_vector * x, void *params,
               gsl_vector * f)
@@ -88,7 +63,7 @@ int pv_calc_fdf (const gsl_vector * x, void *params,
   return GSL_SUCCESS;
 }
 
-static int c_pv_calc (lua_State *L) {
+static int solve_currents (lua_State *L) {
     //check and fetch the arguments
     double arg1 = luaL_checknumber (L, 1);    
     double arg2 = luaL_checknumber (L, 2);
@@ -97,15 +72,14 @@ static int c_pv_calc (lua_State *L) {
     double arg5 = luaL_checknumber (L, 5);
     double arg6 = luaL_checknumber (L, 6);
     double arg7 = luaL_checknumber (L, 7);
-    printf("a: %f b: %f c: %f d: %f", arg1, arg2, arg3, arg4);
 
     const gsl_multiroot_fdfsolver_type *T;
     gsl_multiroot_fdfsolver *s;
 
     int status;
-    size_t i, iter = 0;
+    size_t iter = 0;
 
-    const size_t n = 5;
+    const size_t n = 2;
     struct rparams p = {arg1, arg2, arg3, arg4, arg5};
     gsl_multiroot_function_fdf f = {&pv_calc_f,
                                     &pv_calc_df,
@@ -122,14 +96,10 @@ static int c_pv_calc (lua_State *L) {
     s = gsl_multiroot_fdfsolver_alloc (T, n);
     gsl_multiroot_fdfsolver_set (s, &f, x);
 
-    print_state (iter, s);
-
     do
     {
       iter++;
       status = gsl_multiroot_fdfsolver_iterate (s);
-
-      print_state (iter, s);
 
       if (status)   /* check if solver is stuck */
         break;
@@ -139,31 +109,26 @@ static int c_pv_calc (lua_State *L) {
     }
     while (status == GSL_CONTINUE && iter < 1000);
 
-    printf ("status = %s\n", gsl_strerror (status));
+    //push the results
+    lua_pushnumber(L, gsl_vector_get (s->x, 0));
+    lua_pushnumber(L, gsl_vector_get (s->x, 1));
 
+    //free the solver memory
     gsl_multiroot_fdfsolver_free (s);
     gsl_vector_free (x);
-
-    //push the results
-    lua_pushnumber(L, arg2);
-    lua_pushnumber(L, arg1);
 
     //return number of results
     return 2;
 }
 
 //library to be registered
-static const struct luaL_Reg newlib [] = {
-      {"c_pv_calc", c_pv_calc},
+static const struct luaL_Reg params [] = {
+      {"solve_currents", solve_currents},
       {NULL, NULL}  /* sentinel */
     };
 
 //name of this function is not flexible
-int luaopen_newlib (lua_State *L){
-    luaL_newlib(L, newlib);
+int luaopen_params (lua_State *L){
+    luaL_newlib(L, params);
     return 1;
 }
-
-#ifdef __cplusplus
-}
-#endif

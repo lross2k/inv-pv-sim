@@ -1,5 +1,3 @@
-newlib = require 'newlib'
-
 -- Constant values
 q   = 1.6e-19 -- elementary charge
 K   = 1.4e-23 -- Boltzmann constant
@@ -30,14 +28,13 @@ i_rs = i_sc / (math.exp(q * v_oc / (n * N_s * K * T)) - 1)
 i_0 = i_rs * (T / T_n) ^ 3 * math.exp(q * E_go * (1 / T_n - 1 / T) / (n * K))
 
 v_pv = 3
-
---print(v_pv,R_s,R_sh)
---print(i_ph,i_0,q,v_pv,R_s,n,K,N_s,T)
-
 a = v_pv/R_sh
 b = R_s/R_sh
 c = -i_0 * math.exp(q * v_pv / (n * K * N_s * T))
 d = q * R_s / (n * K * N_s * T)
 e = i_0 + i_ph
 
-print(newlib.c_pv_calc(a,b,c,d,e,0,0))
+params = require 'params'
+i_pv,i_sh = params.solve_currents(a,b,c,d,e,0,0)
+print(i_pv)
+print(i_sh)
