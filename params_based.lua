@@ -1,3 +1,5 @@
+params = require 'params'
+
 -- Constant values
 q   = 1.6e-19 -- elementary charge
 K   = 1.4e-23 -- Boltzmann constant
@@ -30,20 +32,16 @@ i_0 = i_rs * (T / T_n) ^ 3 * math.exp(q * E_go * (1 / T_n - 1 / T) / (n * K))
 -- Array declaration
 i = {}; p = {}; v = {}
 
-v_pv = 3
---i_sh = (v_pv + i_pv * R_s) / R_sh
-i_sh = 0.0116935
-
--- photovoltaic current
-i_pv = 0 -- initial guess
-
--- Array declaration
-i = {}; p = {}; v = {}
-
+v_oc = v_oc / N_s
+b = R_s/R_sh
+d = q * R_s / (n * K * N_s * T)
+e = i_0 + i_ph
 -- Generate values for a range of the equation
-index = 0
-for v_pv=0,5000,v_oc do
-    i_pv = i_ph - i_0 * (math.exp(q * (v_pv + i_pv * R_s) / (n * K * N_s * T)) - 1) - i_sh
+index = 1
+for v_pv=0,52,v_oc do
+  a = v_pv/R_sh
+  c = -i_0 * math.exp(q * v_pv / (n * K * N_s * T))
+  i_pv,i_sh = params.solve_currents(a,b,c,d,e,0,0)
 	if i_pv >= 0 then
     	i[index] = i_pv
 	    p[index] = i_pv * v_pv
@@ -63,8 +61,8 @@ for iter=1,index-1 do
   file:write(v[iter])
   file:write("\t")
   file:write(i[iter])
---  file:write("\t")
---  file:write(p[iter])
+  file:write("\t")
+  file:write(p[iter])
   file:write("\n")
 end
 
