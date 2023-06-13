@@ -8,3 +8,6 @@ plplotluac.dll
 *.dll
 # *NIX Binaries 
 *.o
+# Visual Studio
+.vs/
+
