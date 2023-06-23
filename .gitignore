@@ -8,3 +8,9 @@ plplotluac.dll
 *.dll
 # *NIX Binaries 
 *.o
+# VS stuff
+.vs/
+packages/
+x64/
+ConsoleApplication/x64/
+
